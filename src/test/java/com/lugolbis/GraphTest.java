@@ -3,6 +3,9 @@ package com.lugolbis;
 import com.lugolbis.dsa.GraphData;
 import com.lugolbis.dsa.Graph;
 import com.lugolbis.dsa.GraphType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -217,5 +220,35 @@ public class GraphTest {
         graph.addNode(new TestNodeValue("A"));
         
         Assertions.assertTrue(graph.getNode(new TestNodeValue("B")).isEmpty());
+    }
+
+    @Test
+    @DisplayName("Test Matrice")
+    void testMatrice() {
+        Graph<TestNodeValue, TestEdgeValue> graph = new Graph<>(GraphType.OrientedGraph);
+        
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A"));;
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B"));;
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C"));;
+        
+        graph.addEdge(nodeA, nodeB, new TestEdgeValue(1));
+        graph.addEdge(nodeB, nodeC, new TestEdgeValue(9));
+        graph.addEdge(nodeC, nodeA, new TestEdgeValue(43));
+
+        HashMap<TestNodeValue, ArrayList<Optional<TestEdgeValue>>> map = new HashMap<>();
+
+        ArrayList<Optional<TestEdgeValue>> arrayA = new ArrayList<>();
+        arrayA.add(Optional.empty()); arrayA.add(Optional.of(new TestEdgeValue(1))); arrayA.add(Optional.empty());
+        map.put(new TestNodeValue("A"), arrayA);
+
+        ArrayList<Optional<TestEdgeValue>> arrayB = new ArrayList<>();
+        arrayB.add(Optional.empty()); arrayB.add(Optional.empty()); arrayB.add(Optional.of(new TestEdgeValue(9)));
+        map.put(new TestNodeValue("B"), arrayB);
+
+        ArrayList<Optional<TestEdgeValue>> arrayC = new ArrayList<>();
+        arrayC.add(Optional.of(new TestEdgeValue(43))); arrayC.add(Optional.empty()); arrayC.add(Optional.empty());
+        map.put(new TestNodeValue("C"), arrayC);
+
+        Assertions.assertEquals(map, graph.getMatrice());
     }
 }

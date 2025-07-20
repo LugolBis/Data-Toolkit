@@ -1,8 +1,12 @@
 package com.lugolbis.dsa;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class Graph<T extends GraphData, U extends GraphData> {
     private HashSet<Node> nodes;
@@ -352,5 +356,67 @@ public class Graph<T extends GraphData, U extends GraphData> {
         }
 
         return degree;
+    }
+
+    /**
+     * Return the number of nodes and the number of edges
+     * @return [int, int]
+     */
+    public int[] size() {
+        int[] array = {nodes.size(), edges.size()};
+        return array;
+    }
+
+    public HashMap<T, ArrayList<Optional<U>>> getMatrice() {
+        HashMap<T, ArrayList<Optional<U>>> map = new HashMap<>();
+        HashMap<T, Integer> keys = new HashMap<>();
+
+        int key_index = 0;
+        for (Node node : nodes) {
+            ArrayList<Optional<U>> array = new ArrayList<>();
+
+            for (int index=0; index < nodes.size(); index++) {
+                array.add(Optional.empty());
+            }
+
+            T value = node.getValue();
+            map.put(value, array);
+            keys.put(value, key_index);
+            key_index++;
+        }
+
+        if (type == GraphType.OrientedGraph) {
+            return getOrientedMatrice(map, keys);
+        }
+        else {
+            return getUnorientedMatrice(map, keys);
+        }
+    }
+
+    private HashMap<T, ArrayList<Optional<U>>> getOrientedMatrice(HashMap<T, ArrayList<Optional<U>>> map, HashMap<T, Integer> keys) {
+        for (Edge edge : edges) {
+            T key = edge.start.getValue();
+            int index = keys.get(edge.end.getValue());
+            Optional<U> value = edge.getValue(); 
+
+            map.get(key).set(index, value);
+        }
+
+        return map;
+    }
+
+    private HashMap<T, ArrayList<Optional<U>>> getUnorientedMatrice(HashMap<T, ArrayList<Optional<U>>> map, HashMap<T, Integer> keys) {
+        for (Edge edge : edges) {
+            T key1 = edge.start.getValue();
+            T key2 = edge.end.getValue();
+            int index1 = keys.get(edge.end.getValue());
+            int index2 = keys.get(edge.start.getValue());
+            Optional<U> value = edge.getValue(); 
+
+            map.get(key1).set(index1, value);
+            map.get(key2).set(index2, value);
+        }
+
+        return map;
     }
 }
