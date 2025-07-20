@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class Graph<T extends GraphData, U extends GraphData> {
     private HashSet<Node> nodes;
@@ -101,6 +99,10 @@ public class Graph<T extends GraphData, U extends GraphData> {
         this.type = type;
     }
 
+    public GraphType getType() {
+        return type;
+    }
+
     /**
      * Create and adding a new Node to the graph from the value of type T.
      */
@@ -173,6 +175,10 @@ public class Graph<T extends GraphData, U extends GraphData> {
         return Optional.empty();
     }
 
+    public HashSet<Node> getNodes() {
+        return nodes;
+    }
+
     /**
      * @param start is the node from where the edge start
      * @param end is the node from where the edge end
@@ -186,6 +192,14 @@ public class Graph<T extends GraphData, U extends GraphData> {
             case UnorientedGraph : return this.getEdgeUnoriented(start, end, iterator);
             default : return Optional.empty();
         }
+    }
+
+    /**
+     * Return the edges of the Graph. /!\ WARNING : In the case of an Unoriented graph it only return the edges in one direction.
+     * If you have A--B it will return A->B or B->A, you need to paid attention about that when iterate on the result.
+     */
+    public HashSet<Edge> getEdges() {
+        return edges;
     }
 
     private Optional<Edge> getEdgeOriented(Node start, Node end, Iterator<Edge> iterator) {
