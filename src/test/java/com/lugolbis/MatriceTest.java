@@ -5,6 +5,7 @@ import com.lugolbis.mathematics.Matrice;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,10 +96,22 @@ public class MatriceTest {
         Matrice matriceA = createSampleMatrice2x3();
         Matrice matriceB = createSampleMatrice3x2();
 
-        Optional<Matrice> result = Matrice.mult(matriceA, matriceB);
+        Optional<Matrice> result;
+        try {
+            result = Matrice.mult(matriceA, matriceB);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            assertTrue(false);
+            return;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            assertTrue(false);
+            return;
+        }
 
         assertTrue(result.isPresent());
         Matrice multMatrice = result.get();
+
         assertEquals(2, multMatrice.getShape().rows);
         assertEquals(2, multMatrice.getShape().columns);
 
@@ -115,10 +128,19 @@ public class MatriceTest {
         Matrice matriceA = createSampleMatrice2x2();
         Matrice matriceB = createSampleMatrice3x2();
 
-        Optional<Matrice> result = Matrice.mult(matriceA, matriceB);
+        Optional<Matrice> result;
+        try {
+            result = Matrice.mult(matriceA, matriceB);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            assertTrue(false);
+            return;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            assertTrue(false);
+            return;
+        }
 
-        System.out.println(matriceA);
-        System.out.println(matriceB);
         assertTrue(result.isEmpty());
     }
 
