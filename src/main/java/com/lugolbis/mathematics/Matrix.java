@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.DoubleBinaryOperator;
-import java.util.concurrent.*;
 
-public class Matrice {
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+public class Matrix {
     private ArrayList<Double> rows;
     private int columns;
 
-    public Matrice(ArrayList<Double> rows, int columns) {
+    public Matrix(ArrayList<Double> rows, int columns) {
         this.rows = rows;
         this.columns = columns;
     }
@@ -22,59 +28,6 @@ public class Matrice {
         Shape(int rows, int columns) {
             this.rows = rows;
             this.columns = columns;
-        }
-    }
-
-    private static class ParallelRows implements Callable<ArrayList<Double>> {
-        private int shapeB;
-        private int indexR;
-        private Matrice matriceA;
-        private Matrice matriceB;
-
-        private ParallelRows(int shapeB, int indexR, Matrice matriceA, Matrice matriceB) {
-            this.shapeB = shapeB;
-            this.indexR = indexR;
-            this.matriceA = matriceA;
-            this.matriceB = matriceB;
-        }
-
-        @Override
-        public ArrayList<Double> call() throws InterruptedException, ExecutionException {
-            ArrayList<Double> array = new ArrayList<>(); 
-            List<Double> rowA = matriceA.unsafeGetRow(indexR);
-
-            int nbThreads = shapeB;
-            ExecutorService executor = Executors.newFixedThreadPool(nbThreads);
-            List<Future<Double>> futures = new ArrayList<>();
-
-            for (int indexC=0; indexC < shapeB; indexC++) {
-                futures.add(executor.submit(new ParallelColumns(indexC, rowA, matriceB)));
-            }
-
-            for (Future<Double> future : futures) {
-                array.add(future.get());
-            }
-
-            executor.shutdown();
-            return array;
-        }
-    }
-
-    private static class ParallelColumns implements Callable<Double> {
-        private int indexC;
-        private List<Double> rowA;
-        private Matrice matriceB;
-
-        private ParallelColumns(int indexC, List<Double> rowA, Matrice matriceB) {
-            this.indexC = indexC;
-            this.rowA = rowA;
-            this.matriceB = matriceB;
-        }
-
-        @Override
-        public Double call() {
-            List<Double> columnB = matriceB.unsafeGetColumn(indexC);
-            return multRowColumn(rowA, columnB);
         }
     }
 
@@ -94,7 +47,7 @@ public class Matrice {
         }
     }
 
-    private List<Double> unsafeGetRow(int index) {
+    public List<Double> unsafeGetRow(int index) {
         int start = columns * index;
         int end = start + columns;
         return rows.subList(start, end);
@@ -117,7 +70,7 @@ public class Matrice {
         return Optional.of(array);
     }
 
-    private List<Double> unsafeGetColumn(int index) {
+    public List<Double> unsafeGetColumn(int index) {
         ArrayList<Double> array = new ArrayList<>();
         for (int indexValue=index; indexValue < rows.size(); indexValue += columns) {
             array.add(rows.get(indexValue));
@@ -139,7 +92,7 @@ public class Matrice {
         }
     }
 
-    public static Optional<Matrice> createMatrice(ArrayList<ArrayList<Double>> array) {
+    public static Optional<Matrix> createMatrix(ArrayList<ArrayList<Double>> array) {
         if (array.size() <= 0) {
             return Optional.empty();
         }
@@ -157,18 +110,18 @@ public class Matrice {
             }
         }
 
-        return Optional.of(new Matrice(rows, columns));
+        return Optional.of(new Matrix(rows, columns));
     }
 
-    public static Optional<Matrice> sum(Matrice matriceA, Matrice matriceB) {
+    public static Optional<Matrix> sum(Matrix matriceA, Matrix matriceB) {
         return simpleCompute(matriceA, matriceB, ((x, y) -> x + y));
     }
 
-    public static Optional<Matrice> sub(Matrice matriceA, Matrice matriceB) {
+    public static Optional<Matrix> sub(Matrix matriceA, Matrix matriceB) {
         return simpleCompute(matriceA, matriceB, ((x, y) -> x - y));
     }
 
-    private static Optional<Matrice> simpleCompute(Matrice matriceA, Matrice matriceB, DoubleBinaryOperator op) {
+    private static Optional<Matrix> simpleCompute(Matrix matriceA, Matrix matriceB, DoubleBinaryOperator op) {
         Shape shapeA = matriceA.getShape();
         Shape shapeB = matriceB.getShape();
         
@@ -182,7 +135,7 @@ public class Matrice {
                 rows.add(op.applyAsDouble(rowsA.get(index), rowsB.get(index)));
             }
 
-            return Optional.of(new Matrice(rows, matriceA.columns));
+            return Optional.of(new Matrix(rows, matriceA.columns));
         }
         else {
             return Optional.empty();
@@ -198,7 +151,7 @@ public class Matrice {
         }
     }
 
-    public static Optional<Matrice> mult(Matrice matriceA, Matrice matriceB) throws InterruptedException, ExecutionException {
+    public static Optional<Matrix> mult(Matrix matriceA, Matrix matriceB) {
         Shape shapeA = matriceA.getShape();
         Shape shapeB = matriceB.getShape();
 
@@ -206,26 +159,69 @@ public class Matrice {
             return Optional.empty();
         }
 
-        return multParallel(matriceA, matriceB, shapeA, shapeB);
+        ArrayList<Double> array = new ArrayList<>();
+        for (int indexR=0; indexR < shapeA.rows; indexR++) {
+            List<Double> rowA = matriceA.unsafeGetRow(indexR); 
+
+            for (int indexC=0; indexC < shapeB.columns; indexC++) {
+                List<Double> columnB = matriceB.unsafeGetColumn(indexC);
+                double value = 0;
+
+                for (int index=0; index < rowA.size(); index++) {
+                    value += rowA.get(index) * columnB.get(index);
+                }
+                array.add(value);
+            }
+        }
+
+        return Optional.of(new Matrix(array, shapeB.columns));
     }
 
-    private static Optional<Matrice> multParallel(Matrice matriceA, Matrice matriceB, Shape shapeA, Shape shapeB) throws InterruptedException, ExecutionException {
+    public Optional<Vector> multVector(Vector vector) {
+        int vector_size = vector.getSize();
+
+        if (
+            vector.getType() == Vector.Type.Column
+            && columns == vector_size
+        ) {
+            ArrayList<Double> result = new ArrayList<>();
+            ArrayList<Double> values = vector.getValues();
+
+            for (int indexR=0; indexR < rows.size()/columns; indexR++) {
+                List<Double> row = unsafeGetRow(indexR);
+
+                double value = 0;
+                for (int index=0; index < vector_size; index++) {
+                    value += row.get(index) * values.get(index);
+                }
+                result.add(value);
+            }
+            return Optional.of(new Vector(result, Vector.Type.Column));
+        }
+        else {
+            return Optional.empty();
+        }
+    }
+
+    public void transposate() {
+        Shape shape = getShape();
         ArrayList<Double> array = new ArrayList<>();
-
-        int nbThreads = shapeA.rows;
-        ExecutorService executor = Executors.newFixedThreadPool(nbThreads);
-        List<Future<ArrayList<Double>>> futures = new ArrayList<>();
         
-        for (int indexR=0; indexR < shapeA.rows; indexR++) {
-            futures.add(executor.submit(new ParallelRows(shapeB.columns, indexR, matriceA, matriceB)));
+        ArrayList<ArrayList<Double>> arrays = new ArrayList<>();
+        int index = 0;
+        while (index < shape.rows) {
+            arrays.add(new ArrayList<>(rows.subList(index, index + shape.columns)));
+            index += shape.columns + 1;
         }
 
-        for (Future<ArrayList<Double>> future : futures) {
-            array.addAll(future.get());
+        for (int indexC=0; indexC < shape.columns; indexC++) {
+            for (int indexR=0; indexR < shape.rows; indexR++) {
+                array.add(arrays.get(indexR).removeFirst());
+            }
         }
 
-        executor.shutdown();
-        return Optional.of(new Matrice(array, shapeB.columns));
+        rows = array;
+        columns = shape.rows;
     }
 
     public String toString() {
@@ -242,11 +238,18 @@ public class Matrice {
         return result;
     }
 
-    private static double multRowColumn(List<Double> row, List<Double> column) {
-        double value = 0;
-        for (int index=0; index < row.size(); index++) {
-            value += row.get(index) * column.get(index);
+    public static Matrix loadFromJson(String filePath) throws Exception {
+        String json = new String(Files.readAllBytes(Paths.get(filePath)));
+        JsonObject obj = new Gson().fromJson(json, JsonObject.class);
+        
+        JsonArray dataArray = obj.get("rows").getAsJsonArray();
+        int dataColumns = obj.get("columns").getAsInt();
+
+        ArrayList<Double> rows = new ArrayList<>();
+        for (JsonElement element : dataArray) {
+            rows.add(element.getAsDouble());
         }
-        return value;
+
+        return new Matrix(rows, dataColumns);
     }
 }

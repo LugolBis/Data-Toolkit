@@ -47,4 +47,14 @@ public class LinkedList<T> {
             return false;
         }
     }
+
+    public String toString() {
+        String result = String.format("[ %s ]", value);
+        if (next.isPresent()) {
+            return String.format("%s->%s", result, next.get().toString());
+        }
+        else {
+            return result;
+        }
+    }
 }
