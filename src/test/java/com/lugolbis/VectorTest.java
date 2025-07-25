@@ -48,8 +48,6 @@ public class VectorTest {
         Vector vector = getVectorRow(List.of(2.0, 3.0, 5.0));
         Matrix matrix = new Matrix(new ArrayList<>(List.of(1.0, 2.0, 4.0, 5.0, 7.0, 5.0)), 2);
 
-        System.out.println(vector);
-        System.out.println(matrix);
         Optional<Vector> vectorC = vector.multMatrix(matrix);
 
         assertTrue(vectorC.isPresent()); 
