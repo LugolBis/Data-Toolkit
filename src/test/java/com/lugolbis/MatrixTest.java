@@ -151,8 +151,8 @@ public class MatrixTest {
 
     @Test
     void testVectorMult() {
-        Vector vector = new Vector(new ArrayList<>(List.of(1.0, 8.0, 15.0)), Vector.Type.Column);
-        Matrix matrix = new Matrix(new ArrayList<>(List.of(1.0, 3.0, 5.0, 9.0, 10.0, 21.0)), 3);
+        Vector vector = Vector.newVector(new ArrayList<>(List.of(1.0, 8.0, 15.0)), Vector.Type.Column).get();
+        Matrix matrix = Matrix.newMatrix(new ArrayList<>(List.of(1.0, 3.0, 5.0, 9.0, 10.0, 21.0)), 3).get();
 
         Optional<Vector> result = matrix.multVector(vector);
         assertTrue(result.isPresent());

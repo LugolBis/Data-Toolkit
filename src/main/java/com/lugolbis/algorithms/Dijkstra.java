@@ -30,10 +30,14 @@ public class Dijkstra<T extends GraphData, U extends GraphData & DijkstraData> {
         return predecessors;
     }
 
-    public static <T extends GraphData, U extends GraphData & DijkstraData> Dijkstra<T, U> main(Graph<T, U> graph, Graph<T, U>.Node node) {
+    public static <T extends GraphData, U extends GraphData & DijkstraData> Optional<Dijkstra<T, U>> run(Graph<T, U> graph, Graph<T, U>.Node node) {
+        if (graph == null || node  == null) {
+            return Optional.empty();
+        }
+        
         Dijkstra<T, U> dijkstra = new Dijkstra<>(graph);
         dijkstra.compute(node);
-        return dijkstra;
+        return Optional.of(dijkstra);
     }
 
     private void compute(Graph<T, U>.Node nodeTarget) {

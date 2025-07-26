@@ -16,9 +16,18 @@ public class Matrix {
     private ArrayList<Double> rows;
     private int columns;
 
-    public Matrix(ArrayList<Double> rows, int columns) {
+    private Matrix(ArrayList<Double> rows, int columns) {
         this.rows = rows;
         this.columns = columns;
+    }
+
+    public static Optional<Matrix> newMatrix(ArrayList<Double> rows, int columns) {
+        for (Double number : rows) {
+            if (number == null) {
+                return Optional.empty();
+            }
+        }
+        return Optional.of(new Matrix(rows, columns));
     }
 
     public class Shape {
@@ -79,7 +88,7 @@ public class Matrix {
     }
 
     public Shape getShape() {
-        return new Shape(rows.size()/columns, columns);
+        return new Shape(rows.size() / columns, columns);
     }
 
     public Optional<Double> getValue(int row, int column) {
@@ -102,7 +111,7 @@ public class Matrix {
 
         for (int index=1; index < array.size(); index++) {
             ArrayList<Double> row = array.get(index);
-            if (row.size() == columns) {
+            if (row != null && row.size() == columns) {
                 rows.addAll(row);
             }
             else {
@@ -122,6 +131,9 @@ public class Matrix {
     }
 
     private static Optional<Matrix> simpleCompute(Matrix matriceA, Matrix matriceB, DoubleBinaryOperator op) {
+        if (matriceA == null || matriceB == null) {
+            return Optional.empty();
+        }
         Shape shapeA = matriceA.getShape();
         Shape shapeB = matriceB.getShape();
         
@@ -152,6 +164,9 @@ public class Matrix {
     }
 
     public static Optional<Matrix> mult(Matrix matriceA, Matrix matriceB) {
+        if (matriceA == null || matriceB == null) {
+            return Optional.empty();
+        }
         Shape shapeA = matriceA.getShape();
         Shape shapeB = matriceB.getShape();
 
@@ -178,6 +193,9 @@ public class Matrix {
     }
 
     public Optional<Vector> multVector(Vector vector) {
+        if (vector == null) {
+            return Optional.empty();
+        }
         int vector_size = vector.getSize();
 
         if (
@@ -196,7 +214,7 @@ public class Matrix {
                 }
                 result.add(value);
             }
-            return Optional.of(new Vector(result, Vector.Type.Column));
+            return Optional.of(Vector.newVector(result, Vector.Type.Column).get());
         }
         else {
             return Optional.empty();

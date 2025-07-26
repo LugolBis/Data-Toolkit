@@ -13,9 +13,18 @@ public class Vector {
     private Type type;
     private ArrayList<Double> values;
 
-    public Vector(ArrayList<Double> values, Type type) {
+    private Vector(ArrayList<Double> values, Type type) {
         this.values = values;
         this.type = type;
+    }
+
+    public static Optional<Vector> newVector(ArrayList<Double> values, Type type) {
+        if (values != null && type != null) {
+            return Optional.of(new Vector(values, type));
+        }
+        else {
+            return Optional.empty();
+        }
     }
 
     public Optional<Double> getValue(int index) {
@@ -40,7 +49,9 @@ public class Vector {
     }
 
     public void setValues(ArrayList<Double> values) {
-        this.values = values;
+        if (values != null) {
+            this.values = values;
+        }
     }
 
     /**
@@ -56,7 +67,7 @@ public class Vector {
     }
 
     public Optional<Double> multScalar(Vector vector) {
-        if (values.size() == vector.values.size()) {
+        if (vector != null && values.size() == vector.values.size()) {
             double result = 0;
 
             for(int index=0; index < values.size(); index++) {
@@ -70,7 +81,7 @@ public class Vector {
     }
 
     public Optional<Vector> multHadamard(Vector vector) {
-        if (values.size() == vector.values.size()) {
+        if (vector != null && values.size() == vector.values.size()) {
             ArrayList<Double> array = new ArrayList<>();
 
             for (int index=0; index < values.size(); index++) {
@@ -85,7 +96,8 @@ public class Vector {
 
     public Optional<Double> multRowColumn(Vector vector) {
         if (
-            type == Type.Row
+            vector != null
+            && type == Type.Row
             && vector.type == Type.Column
             && values.size() == vector.values.size()
         ) {
@@ -101,7 +113,8 @@ public class Vector {
 
     public Optional<Matrix> multColumnRow(Vector vector) {
         if (
-            type == Type.Column
+            vector != null
+            && type == Type.Column
             && vector.type == Type.Row
             && values.size() == vector.values.size()
         ) {
@@ -115,7 +128,7 @@ public class Vector {
                     result.add(value * multiplicator);
                 }
             }
-            return Optional.of(new Matrix(result, values.size()));
+            return Optional.of(Matrix.newMatrix(result, values.size()).get());
         }
         else {
             return Optional.empty();
@@ -124,7 +137,8 @@ public class Vector {
 
     public Optional<Vector> multMatrix(Matrix matrix) {
         if (
-            type == Type.Row
+            matrix != null
+            && type == Type.Row
             && values.size() == matrix.getShape().rows
         ) {
             ArrayList<Double> result = new ArrayList<>();

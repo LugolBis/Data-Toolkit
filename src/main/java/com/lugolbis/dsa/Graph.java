@@ -64,7 +64,9 @@ public class Graph<T extends GraphData, U extends GraphData> {
         }
 
         public void setValue(U value) {
-            this.value = Optional.of(value);
+            if (value != null) {
+                this.value = Optional.of(value);
+            }
         }
 
         @Override
@@ -74,7 +76,7 @@ public class Graph<T extends GraphData, U extends GraphData> {
 
         @Override
         public boolean equals(Object other) {
-            if (other instanceof Graph.Edge) {
+            if (other instanceof Graph.Edge && other != null) {
                 return this.hashCode() == other.hashCode();
             }
             else {
@@ -93,10 +95,19 @@ public class Graph<T extends GraphData, U extends GraphData> {
         }
     }
     
-    public Graph(GraphType type) {
+    private Graph(GraphType type) {
         nodes = new HashSet<>();
         edges = new HashSet<>();
         this.type = type;
+    }
+
+    public static <T extends GraphData, U extends GraphData> Optional<Graph<T, U>> newGraph(GraphType type) {
+        if (type != null) {
+            return Optional.of(new Graph<>(type));
+        }
+        else {
+            return Optional.empty();
+        }
     }
 
     public GraphType getType() {
@@ -106,16 +117,24 @@ public class Graph<T extends GraphData, U extends GraphData> {
     /**
      * Create and adding a new Node to the graph from the value of type T.
      */
-    public Node addNode(T value) {
-        Node node = new Node(value);
-        nodes.add(node);
-        return node;
+    public Optional<Node> addNode(T value) {
+        if (value != null) {
+            Node node = new Node(value);
+            nodes.add(node);
+            return Optional.of(node);
+        }
+        else {
+            return Optional.empty();
+        }
     }
 
     /**
      * Remove the node and all the edges with this node.
      */
     public void removeNode(Node node) {
+        if (node == null) {
+            return;
+        }
         nodes.remove(node);
 
         Iterator<Edge> iterator = edges.iterator();
@@ -134,10 +153,15 @@ public class Graph<T extends GraphData, U extends GraphData> {
      * @param start is the node from where the edge start
      * @param end is the node from where the edge end
      * */ 
-    public Edge addEdge(Node start, Node end) {
-        Edge edge = new Edge(start, end);
-        edges.add(edge);
-        return edge;
+    public Optional<Edge> addEdge(Node start, Node end) {
+        if (start != null && end != null) {
+            Edge edge = new Edge(start, end);
+            edges.add(edge);
+            return Optional.of(edge);
+        }
+        else {
+            return Optional.empty();
+        }
     }
 
     /** 
@@ -145,17 +169,24 @@ public class Graph<T extends GraphData, U extends GraphData> {
      * @param end is the node from where the edge end
      * @param value is the value of the edge
      * */ 
-    public Edge addEdge(Node start, Node end, U value) {
-        Edge edge = new Edge(start, end, value);
-        edges.add(edge);
-        return edge;
+    public Optional<Edge> addEdge(Node start, Node end, U value) {
+        if (start != null && end != null) {
+            Edge edge = new Edge(start, end, value);
+            edges.add(edge);
+            return Optional.of(edge);
+        }
+        else {
+            return Optional.empty();
+        }
     }
 
     /**
      * Remove the specified edge
      */
     public void removeEdge(Edge edge) {
-        edges.remove(edge);
+        if (edge != null) {
+            edges.remove(edge);
+        }
     }
 
     /**
@@ -347,7 +378,10 @@ public class Graph<T extends GraphData, U extends GraphData> {
      * This method return the degree of a node.
      */
     public int degreeNode(Node node) {
-        if (type == GraphType.OrientedGraph) {
+        if (node == null) {
+            return 0;
+        }
+        else if (type == GraphType.OrientedGraph) {
             return degreeInNode(node).get() + degreeOutNode(node).get();
         }
         else {

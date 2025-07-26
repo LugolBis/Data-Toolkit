@@ -1,6 +1,9 @@
 package com.lugolbis;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 
 import com.lugolbis.dsa.Graph;
@@ -36,9 +39,9 @@ class DijkstraTest {
         }
     }
 
-    static class TestEdge implements DijkstraData, GraphData {
+    static class TestEdgeValue implements DijkstraData, GraphData {
         private final Double weight;
-        public TestEdge(Double weight) { this.weight = weight; }
+        public TestEdgeValue(Double weight) { this.weight = weight; }
         @Override public double getDouble() { return weight; }
         @Override
         public int hashCode() { return weight.hashCode(); }
@@ -50,17 +53,24 @@ class DijkstraTest {
 
     @Test
     void testOrientedGraph() {
-        Graph<TestNodeValue, TestEdge> graph = new Graph<>(GraphType.OrientedGraph);
-        
-        Graph<TestNodeValue, TestEdge>.Node nodeA = graph.addNode(new TestNodeValue("A"));
-        Graph<TestNodeValue, TestEdge>.Node nodeB = graph.addNode(new TestNodeValue("B"));
-        Graph<TestNodeValue, TestEdge>.Node nodeC = graph.addNode(new TestNodeValue("C"));
-        
-        graph.addEdge(nodeA, nodeB, new TestEdge(2.0));
-        graph.addEdge(nodeB, nodeC, new TestEdge(3.0));
-        graph.addEdge(nodeA, nodeC, new TestEdge(10.0));
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.OrientedGraph);
 
-        Dijkstra<TestNodeValue, TestEdge> dijkstra = Dijkstra.main(graph, nodeA);
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
+        
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C")).get();
+        
+        graph.addEdge(nodeA, nodeB, new TestEdgeValue(2.0));
+        graph.addEdge(nodeB, nodeC, new TestEdgeValue(3.0));
+        graph.addEdge(nodeA, nodeC, new TestEdgeValue(10.0));
+
+        Optional<Dijkstra<TestNodeValue, TestEdgeValue>> resultB = Dijkstra.run(graph, nodeA);
+
+        assertTrue(resultB.isPresent());
+        Dijkstra<TestNodeValue, TestEdgeValue> dijkstra = resultB.get();
 
         assertEquals(0.0, dijkstra.getDistances().get(nodeA));
         assertEquals(2.0, dijkstra.getDistances().get(nodeB));
@@ -70,17 +80,23 @@ class DijkstraTest {
 
     @Test
     void testUnorientedGraph() {
-        Graph<TestNodeValue, TestEdge> graph = new Graph<>(GraphType.UnorientedGraph);
-        
-        Graph<TestNodeValue, TestEdge>.Node nodeA = graph.addNode(new TestNodeValue("A"));
-        Graph<TestNodeValue, TestEdge>.Node nodeB = graph.addNode(new TestNodeValue("B"));
-        Graph<TestNodeValue, TestEdge>.Node nodeC = graph.addNode(new TestNodeValue("C"));
-        
-        graph.addEdge(nodeA, nodeB, new TestEdge(1.0));
-        graph.addEdge(nodeB, nodeC, new TestEdge(2.0));
-        graph.addEdge(nodeA, nodeC, new TestEdge(5.0));
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.UnorientedGraph);
 
-        Dijkstra<TestNodeValue, TestEdge> dijkstra = Dijkstra.main(graph, nodeA);
+        assertTrue(result.isPresent());
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
+        
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C")).get();
+        
+        graph.addEdge(nodeA, nodeB, new TestEdgeValue(1.0));
+        graph.addEdge(nodeB, nodeC, new TestEdgeValue(2.0));
+        graph.addEdge(nodeA, nodeC, new TestEdgeValue(5.0));
+
+        Optional<Dijkstra<TestNodeValue, TestEdgeValue>> resultB = Dijkstra.run(graph, nodeA);
+
+        assertTrue(resultB.isPresent());
+        Dijkstra<TestNodeValue, TestEdgeValue> dijkstra = resultB.get();
         
         assertEquals(0.0, dijkstra.getDistances().get(nodeA));
         assertEquals(1.0, dijkstra.getDistances().get(nodeB));
@@ -90,15 +106,22 @@ class DijkstraTest {
 
     @Test
     void testNoPath() {
-        Graph<TestNodeValue, TestEdge> graph = new Graph<>(GraphType.OrientedGraph);
-        
-        Graph<TestNodeValue, TestEdge>.Node nodeA = graph.addNode(new TestNodeValue("A"));
-        Graph<TestNodeValue, TestEdge>.Node nodeB = graph.addNode(new TestNodeValue("B"));
-        Graph<TestNodeValue, TestEdge>.Node nodeC = graph.addNode(new TestNodeValue("C"));
-        
-        graph.addEdge(nodeA, nodeB, new TestEdge(2.0));
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.OrientedGraph);
 
-        Dijkstra<TestNodeValue, TestEdge> dijkstra = Dijkstra.main(graph, nodeA);
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
+        
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C")).get();
+        
+        graph.addEdge(nodeA, nodeB, new TestEdgeValue(2.0));
+
+        Optional<Dijkstra<TestNodeValue, TestEdgeValue>> resultB = Dijkstra.run(graph, nodeA);
+
+        assertTrue(resultB.isPresent());
+        Dijkstra<TestNodeValue, TestEdgeValue> dijkstra = resultB.get();
         
         assertEquals(Double.POSITIVE_INFINITY, dijkstra.getDistances().get(nodeC));
         assertNull(dijkstra.getPredecessors().get(nodeC));

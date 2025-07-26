@@ -4,6 +4,8 @@ import com.lugolbis.dsa.GraphData;
 import com.lugolbis.dsa.Graph;
 import com.lugolbis.dsa.GraphType;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,7 +16,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 
 public class GraphTest {
-
     static class TestNodeValue implements GraphData {
         private final String id;
 
@@ -68,11 +69,15 @@ public class GraphTest {
     @Test
     @DisplayName("Oriented Graph")
     void testOrientedGraph() {
-        Graph<TestNodeValue, TestEdgeValue> graph = new Graph<>(GraphType.OrientedGraph);
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.OrientedGraph);
+
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
         
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")) ;
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")) ;
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C")) ;
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C")).get();
 
         graph.addEdge(nodeA, nodeB);
         graph.addEdge(nodeB, nodeC);
@@ -103,11 +108,15 @@ public class GraphTest {
     @Test
     @DisplayName("Unoriented Graph")
     void testUnorientedGraph() {
-        Graph<TestNodeValue, TestEdgeValue> graph = new Graph<>(GraphType.UnorientedGraph);
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.UnorientedGraph);
+
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
         
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeX = graph.addNode(new TestNodeValue("X"));
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeY = graph.addNode(new TestNodeValue("Y"));
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeZ = graph.addNode(new TestNodeValue("Z"));
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeX = graph.addNode(new TestNodeValue("X")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeY = graph.addNode(new TestNodeValue("Y")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeZ = graph.addNode(new TestNodeValue("Z")).get();
 
         graph.addEdge(nodeX, nodeY);
         graph.addEdge(nodeY, nodeZ);
@@ -131,12 +140,16 @@ public class GraphTest {
     @Test
     @DisplayName("Edge removal")
     void testEdgeRemoval() {
-        Graph<TestNodeValue, TestEdgeValue> graph = new Graph<>(GraphType.OrientedGraph);
-        
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A"));
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B"));
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.OrientedGraph);
 
-        Graph<TestNodeValue, TestEdgeValue>.Edge edge = graph.addEdge(nodeA, nodeB);
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
+        
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")).get();
+
+        Graph<TestNodeValue, TestEdgeValue>.Edge edge = graph.addEdge(nodeA, nodeB).get();
         
         graph.removeEdge(edge);
         Assertions.assertTrue(graph.getEdge(nodeA, nodeB).isEmpty());
@@ -145,10 +158,14 @@ public class GraphTest {
     @Test
     @DisplayName("Node removal")
     void testNodeRemoval() {
-        Graph<TestNodeValue, TestEdgeValue> graph = new Graph<>(GraphType.OrientedGraph);
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.OrientedGraph);
+
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
         
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A"));
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B"));
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")).get();
         
         graph.addEdge(nodeA, nodeB);
         graph.removeNode(nodeA);
@@ -160,11 +177,15 @@ public class GraphTest {
     @Test
     @DisplayName("Degree Calculations")
     void testDegreeCalculations() {
-        Graph<TestNodeValue, TestEdgeValue> graph = new Graph<>(GraphType.OrientedGraph);
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.OrientedGraph);
+
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
         
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A"));;
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B"));;
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C"));;
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C")).get();
         
         graph.addEdge(nodeA, nodeB);
         graph.addEdge(nodeB, nodeC);
@@ -187,10 +208,14 @@ public class GraphTest {
     @Test
     @DisplayName("Edge with value")
     void testEdgeWithValue() {
-        Graph<TestNodeValue, TestEdgeValue> graph = new Graph<>(GraphType.UnorientedGraph);
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.UnorientedGraph);
+
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
         
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A"));
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B"));
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")).get();
         
         TestEdgeValue edgeValue = new TestEdgeValue(5);
         graph.addEdge(nodeA, nodeB, edgeValue);
@@ -215,7 +240,11 @@ public class GraphTest {
     @Test
     @DisplayName("Don't exist a target Node")
     void testNonExistentElements() {
-        Graph<TestNodeValue, TestEdgeValue> graph = new Graph<>(GraphType.OrientedGraph);
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.OrientedGraph);
+
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
         
         graph.addNode(new TestNodeValue("A"));
         
@@ -225,11 +254,15 @@ public class GraphTest {
     @Test
     @DisplayName("Test Matrice")
     void testMatrice() {
-        Graph<TestNodeValue, TestEdgeValue> graph = new Graph<>(GraphType.OrientedGraph);
+        Optional<Graph<TestNodeValue, TestEdgeValue>> result = Graph.<TestNodeValue, TestEdgeValue>newGraph(GraphType.OrientedGraph);
+
+        assertTrue(result.isPresent());
+
+        Graph<TestNodeValue, TestEdgeValue> graph = result.get();
         
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A"));;
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B"));;
-        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C"));;
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeA = graph.addNode(new TestNodeValue("A")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeB = graph.addNode(new TestNodeValue("B")).get();
+        Graph<TestNodeValue, TestEdgeValue>.Node nodeC = graph.addNode(new TestNodeValue("C")).get();
         
         graph.addEdge(nodeA, nodeB, new TestEdgeValue(1));
         graph.addEdge(nodeB, nodeC, new TestEdgeValue(9));

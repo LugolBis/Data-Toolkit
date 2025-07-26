@@ -16,7 +16,7 @@ class PointTest {
     void testConstructorWithArray() {
         ArrayList<Double> coords = new ArrayList<>(List.of(1.0, 2.0, 3.0));
 
-        Point point = new Point(coords);
+        Point point = Point.newPoint(coords).get();
         
         assertEquals(3, point.getDimensions());
         assertIterableEquals(coords, point.getCoordinates());
@@ -55,7 +55,7 @@ class PointTest {
     @Test
     @DisplayName("Test getDimensions with empty Point")
     void testEmptyPoint() {
-        Point point = new Point(new ArrayList<>());
+        Point point = Point.newPoint(new ArrayList<>()).get();
 
         assertEquals(0, point.getDimensions());
         assertTrue(point.getCoordinates().isEmpty());

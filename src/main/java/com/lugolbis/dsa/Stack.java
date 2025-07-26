@@ -20,7 +20,9 @@ public class Stack<T> {
     }
 
     public void add(T value) {
-        values.addLast(value);
+        if (value != null) {
+            values.addLast(value);
+        }
     }
 
     public int size() {

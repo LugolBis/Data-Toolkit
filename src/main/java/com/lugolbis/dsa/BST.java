@@ -14,6 +14,12 @@ public class BST {
         this.right = Optional.empty();
     }
 
+    public BST() {
+        this.root = OptionalInt.empty();
+        this.left = Optional.empty();
+        this.right = Optional.empty();
+    }
+
     public OptionalInt getValue() {
         return this.root;
     }
@@ -27,11 +33,15 @@ public class BST {
     }
 
     public void setLeft(BST tree) {
-        this.left = Optional.of(tree);
+        if (tree != null) {
+            this.left = Optional.of(tree);
+        }
     }
 
     public void setRight(BST tree) {
-        this.right = Optional.of(tree);
+        if (tree != null) {
+            this.right = Optional.of(tree);
+        }
     }
 
     public void insert(int x) {

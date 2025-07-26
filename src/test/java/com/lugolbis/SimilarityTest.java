@@ -17,8 +17,9 @@ class SimilarityTest {
         HashSet<Double> setA = new HashSet<>(List.of(1.0, 2.0, 3.0));
         HashSet<Double> setB = new HashSet<>(List.of(1.0, 2.0, 3.0));
         
-        double result = Similarity.Jackard(setA, setB);
-        assertEquals(1.0, result, 0.001);
+        Optional<Double> result = Similarity.Jackard(setA, setB);
+        assertTrue(result.isPresent());
+        assertEquals(1.0, result.get(), 0.001);
     }
 
     @Test
@@ -26,8 +27,9 @@ class SimilarityTest {
         HashSet<Double> setA = new HashSet<>(List.of(1.0, 2.0));
         HashSet<Double> setB = new HashSet<>(List.of(3.0, 4.0));
         
-        double result = Similarity.Jackard(setA, setB);
-        assertEquals(0.0, result, 0.001);
+        Optional<Double> result = Similarity.Jackard(setA, setB);
+        assertTrue(result.isPresent());
+        assertEquals(0.0, result.get(), 0.001);
     }
 
     @Test
@@ -35,8 +37,9 @@ class SimilarityTest {
         HashSet<Double> setA = new HashSet<>(List.of(1.0, 2.0, 3.0));
         HashSet<Double> setB = new HashSet<>(List.of(2.0, 3.0, 4.0));
         
-        double result = Similarity.Jackard(setA, setB);
-        assertEquals(2.0 / 4.0, result, 0.001);
+        Optional<Double> result = Similarity.Jackard(setA, setB);
+        assertTrue(result.isPresent());
+        assertEquals(2.0 / 4.0, result.get(), 0.001);
     }
 
     @Test
@@ -44,8 +47,9 @@ class SimilarityTest {
         HashSet<Double> setA = new HashSet<>();
         HashSet<Double> setB = new HashSet<>();
         
-        double result = Similarity.Jackard(setA, setB);
-        assertEquals(1.0, result, 0.001);
+        Optional<Double> result = Similarity.Jackard(setA, setB);
+        assertTrue(result.isPresent());
+        assertEquals(1.0, result.get(), 0.001);
     }
 
     @Test
@@ -53,8 +57,9 @@ class SimilarityTest {
         HashSet<Double> setA = new HashSet<>(List.of(1.0, 2.0));
         HashSet<Double> setB = new HashSet<>();
         
-        double result = Similarity.Jackard(setA, setB);
-        assertEquals(0.0, result, 0.001);
+        Optional<Double> result = Similarity.Jackard(setA, setB);
+        assertTrue(result.isPresent());
+        assertEquals(0.0, result.get(), 0.001);
     }
 
     // Tests pour la méthode minMax

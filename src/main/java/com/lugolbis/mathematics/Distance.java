@@ -31,22 +31,26 @@ public class Distance {
         return Minkowski(p1, p2, 1);
     }
 
-    public static double Levenshtein(String a, String b) {
+    public static Optional<Double> Levenshtein(String a, String b) {
+        if (a == null || b == null) {
+            return Optional.empty();
+        }
+
         int cardA = a.length();
         int cardB = b.length();
 
         if (Math.min(cardA, cardB) == 0) {
-            return Math.max(cardA, cardB);
+            return Optional.of((double)(Math.max(cardA, cardB)));
         }
         else if (a.charAt(0) == b.charAt(0)) {
             return Levenshtein(safeSubString(a, 1), safeSubString(b, 1));
         }
         else {
-            double x = Levenshtein(safeSubString(a, 1), b);
-            double y = Levenshtein(a, safeSubString(b, 1));
-            double z = Levenshtein(safeSubString(a, 1), safeSubString(b, 1));
+            double x = Levenshtein(safeSubString(a, 1), b).orElse(Double.POSITIVE_INFINITY);
+            double y = Levenshtein(a, safeSubString(b, 1)).orElse(Double.POSITIVE_INFINITY);
+            double z = Levenshtein(safeSubString(a, 1), safeSubString(b, 1)).orElse(Double.POSITIVE_INFINITY);
 
-            return 1.0 + Math.min(x, Math.min(y, z));
+            return Optional.of(1.0 + Math.min(x, Math.min(y, z)));
         }
     }
 

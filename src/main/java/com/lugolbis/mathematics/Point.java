@@ -1,6 +1,7 @@
 package com.lugolbis.mathematics;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class Point {
     private ArrayList<Double> coordinates;
@@ -13,8 +14,17 @@ public class Point {
         this.coordinates = coordinatesValues;
     }
 
-    public Point(ArrayList<Double> array) {
+    private Point(ArrayList<Double> array) {
         coordinates = array;
+    }
+
+    public static Optional<Point> newPoint(ArrayList<Double> array) {
+        for (Double number : array) {
+            if (number == null) {
+                return Optional.empty();
+            }
+        }
+        return Optional.of(new Point(array));
     }
 
     public ArrayList<Double> getCoordinates() {

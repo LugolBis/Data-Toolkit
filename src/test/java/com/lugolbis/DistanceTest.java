@@ -52,20 +52,20 @@ class DistanceTest {
 
     @Test
     void testLevenshtein() {
-        assertEquals(0.0, Distance.Levenshtein("", ""));
-        assertEquals(3.0, Distance.Levenshtein("", "abc"));
-        assertEquals(3.0, Distance.Levenshtein("abc", ""));
+        assertEquals(0.0, Distance.Levenshtein("", "").get());
+        assertEquals(3.0, Distance.Levenshtein("", "abc").get());
+        assertEquals(3.0, Distance.Levenshtein("abc", "").get());
         
-        assertEquals(0.0, Distance.Levenshtein("kitten", "kitten"));
+        assertEquals(0.0, Distance.Levenshtein("kitten", "kitten").get());
         
-        assertEquals(1.0, Distance.Levenshtein("chat", "chats"));
-        assertEquals(1.0, Distance.Levenshtein("chat", "cha"));
-        assertEquals(1.0, Distance.Levenshtein("chat", "chit"));
+        assertEquals(1.0, Distance.Levenshtein("chat", "chats").get());
+        assertEquals(1.0, Distance.Levenshtein("chat", "cha").get());
+        assertEquals(1.0, Distance.Levenshtein("chat", "chit").get());
         
-        assertEquals(3.0, Distance.Levenshtein("kitten", "sitting"));
-        assertEquals(2.0, Distance.Levenshtein("book", "back"));
-        assertEquals(3.0, Distance.Levenshtein("saturday", "sunday"));
+        assertEquals(3.0, Distance.Levenshtein("kitten", "sitting").get());
+        assertEquals(2.0, Distance.Levenshtein("book", "back").get());
+        assertEquals(3.0, Distance.Levenshtein("saturday", "sunday").get());
         
-        assertEquals(1.0, Distance.Levenshtein("café", "cafe"));
+        assertEquals(1.0, Distance.Levenshtein("café", "cafe").get());
     }
 }

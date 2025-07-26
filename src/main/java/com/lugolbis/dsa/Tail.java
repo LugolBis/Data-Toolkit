@@ -20,7 +20,9 @@ public class Tail<T> {
     }
 
     public void add(T value) {
-        values.addLast(value);
+        if (value != null) {
+            values.addLast(value);
+        }
     }
 
     public int size() {

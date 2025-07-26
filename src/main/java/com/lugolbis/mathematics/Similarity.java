@@ -5,7 +5,11 @@ import java.util.HashSet;
 import java.util.Optional;
 
 public class Similarity {
-    public static double Jackard(HashSet<Double> setA, HashSet<Double> setB) {
+    public static Optional<Double> Jackard(HashSet<Double> setA, HashSet<Double> setB) {
+        if (setA == null || setB == null) {
+            return Optional.empty();
+        }
+
         double intersection = 0.0;
 
         for (double valueA : setA) {
@@ -17,15 +21,15 @@ public class Similarity {
         double union = (double)(setB.size()) + (double)(setA.size()) - intersection;
 
         if (union > 0.0) {
-            return intersection / union;
+            return Optional.of(intersection / union);
         }
         else {
-            return 1.0;
+            return Optional.of(1.0);
         }
     }
 
     public static Optional<Double> minMax(ArrayList<Double> A, ArrayList<Double> B) {
-        if (A.size() == B.size()) {
+        if (A != null && B != null && A.size() == B.size()) {
             double sum_min = 0;
             double sum_max = 0;
 
@@ -56,6 +60,5 @@ public class Similarity {
         else {
             return Optional.empty();
         }
-        
     }
 }
