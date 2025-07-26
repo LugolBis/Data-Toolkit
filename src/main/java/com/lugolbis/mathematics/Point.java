@@ -31,4 +31,8 @@ public class Point {
     public int getDimensions() {
         return coordinates.size();
     }
+
+    public String toString() {
+        return coordinates.toString();
+    }
 }

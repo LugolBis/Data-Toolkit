@@ -140,7 +140,11 @@ public class BST {
         return;
     }
 
-    public String display(int level) {
+    public String toString() {
+        return display(0);
+    }
+
+    private String display(int level) {
         String result = "\n" + "| ".repeat(level) + "Root of the tree : ";
         result +=  (this.root.isPresent()) ? this.root.getAsInt() : "EMPTY";
         
