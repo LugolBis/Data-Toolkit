@@ -5,21 +5,22 @@
 ## Features
 
 ### 🧮 Mathematical Concepts
-- **Vectors**: Multi-dimensional vector operations
-- **Matrices**: Basic linear algebra operations
-- **Distances**: *Euclidean*, *Manhattan*, *Minkowski* and *Levenshtein*
-- **Points**: Representation and manipulation of *N*-dimensional points
-- **Similarities**: *Jackard* similarity and other comparison metrics
+- **Vectors** : Multi-dimensional vector operations.
+- **Matrices** : Basic linear algebra operations.
+- **Distances** : *Euclidean*, *Manhattan*, *Minkowski* and *Levenshtein*.
+- **Points** : Representation and manipulation of *N*-dimensional points.
+- **Similarities** : *Jackard* similarity and other comparison metrics.
 
 ### 🗂️ Data Structures
-- **Binary Search Tree (BST)**: Insertion, search, etc
-- **Stack**: LIFO data structure implementation
-- **Queue**: FIFO data structure implementation
-- **Linked List**: Single linked list with standard operations
+- **Binary Search Tree (BST)** : Insertion, search, etc.
+- **Stack** : LIFO data structure implementation.
+- **Queue** : FIFO data structure implementation.
+- **Linked List** : Single linked list with standard operations.
 
 ### ⚙️ Algorithms
-- **Dijkstra's Algorithm**: Shortest path calculation in weighted graphs
-- **Hierarchical Clustering (CAH)**: Agglomerative clustering algorithm for hierarchical grouping and Dendrogram
+- **Dijkstra's Algorithm** : Shortest path calculation in weighted graphs.
+- **Hierarchical Clustering (CAH)** : Agglomerative clustering algorithm for hierarchical grouping and Dendrogram.
+- **K-Nearest Neighbors (KNN)** : A non-parametric supervised learning method, used for Classification.
 
 ## Getting Started
 
