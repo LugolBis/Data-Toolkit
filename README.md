@@ -19,7 +19,7 @@
 
 ### ⚙️ Algorithms
 - **Dijkstra's Algorithm** : Shortest path calculation in weighted graphs.
-- **Hierarchical Clustering (CAH)** : Agglomerative clustering algorithm for hierarchical grouping and Dendrogram.
+- **Agglomerative Hierarchical Clustering Algorithm (AHC / CAH)** : Agglomerative clustering algorithm for hierarchical grouping and Dendrogram.
 - **K-Nearest Neighbors (KNN)** : A non-parametric supervised learning method, used for Classification.
 
 ## Getting Started
